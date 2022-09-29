@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreStudentRequest;
 use App\Http\Resources\StudentResource;
 use App\Models\Student;
 use Illuminate\Http\Request;
@@ -17,8 +18,9 @@ class StudentController extends Controller
     public function index()
     {
         // return StudentResource::collection(Student::paginate(10));
+        // return $students = Student::paginate(15)->first();
         $students = DB::table('students')->get();
-        return $students;
+        return json_encode($students);
     }
 
     /**
@@ -27,9 +29,16 @@ class StudentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreStudentRequest $request)
     {
-        //
+        $student = array();
+        $student['name'] = $request->name;
+        $student['email'] = $request->email;
+        $student['phone'] = $request->phone;
+        $student['gender'] = $request->gender;
+        DB::table('students')->insert($student);
+        // $student = Student::create($request->validated());
+        return $student;
     }
 
     /**
@@ -38,9 +47,9 @@ class StudentController extends Controller
      * @param  \App\Models\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function show(Student $student)
+    public function show($id)
     {
-        //
+        return DB::table('students')->where('id',$id)->get();
     }
 
     /**
@@ -50,9 +59,16 @@ class StudentController extends Controller
      * @param  \App\Models\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Student $student)
+    public function update(StoreStudentRequest $request,Student $student)
     {
-        //
+        // $student = array();
+        // $student['name'] = $request->name;
+        // $student['email'] = $request->email;
+        // $student['phone'] = $request->phone;
+        // $student['gender'] = $request->gender;
+        // DB::table('students')->whwre('id',$request->id)->update($student);
+        $student->update($request->validated());
+        return $student;
     }
 
     /**
@@ -61,8 +77,9 @@ class StudentController extends Controller
      * @param  \App\Models\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Student $student)
+    public function destroy($id)
     {
-        //
+        DB::table('students')->where('id',$id)->delete();
+        return response()->json(['message' => 'data deleted'],200);
     }
 }

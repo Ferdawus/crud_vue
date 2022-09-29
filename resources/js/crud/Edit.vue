@@ -9,8 +9,9 @@
                             >List</router-link
                         >
                     </div>
+                    <!-- {{ this.$route.params.id }} -->
                     <div class="card-body">
-                        <form @submit.prevent="storeData()" action="">
+                        <form @submit.prevent="updateData()" action="">
                             <div class="mb-3">
                                 <label for="name" class="form-label"
                                     >Name</label
@@ -78,7 +79,7 @@
 </template>
 <script>
 export default {
-    name: "Add",
+    name: "Edit",
     data() {
         return {
             form:{
@@ -90,16 +91,32 @@ export default {
             errors:[],
         }
     },
+    mounted(){
+        this.editData();
+    },
     methods: {
-        storeData(){
+        editData(){
             // console.log(this.form);
-            axios.post('/api/students/',this.form)
+            axios.get('/api/students/'+this.$route.params.id)
             .then(res => {
-                // console.log(res.status);
+                // console.log(res.data[0].email);
                 if (res.status === 200) {
-                    this.form = ''
-                    this.errors = ''
-
+                    this.form = res.data[0]
+                }
+            })
+            .catch(err => {
+                this.errors = err.response.data.errors;
+                // console.error(err.response.data.errors);
+            })
+        },
+        updateData(){
+            axios.put('/api/students/'+this.$route.params.id,this.form)
+            .then(res => {
+                // console.log(res.data[0].email);
+                if (res.status === 200) {
+                    this.form = ""
+                    this.errors = ""
+                    this.$router.push({name:'List'})
                 }
             })
             .catch(err => {

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 // import Home from '../views/Home.vue'
 import Add from '../crud/AddNew.vue'
 import List from '../crud/List.vue'
+import Edit from '../crud/Edit.vue'
 const routes = [
 
   {
@@ -13,6 +14,11 @@ const routes = [
     path: '/add-new',
     name: 'Add',
     component: Add
+  },
+  {
+    path: '/student/edit/:id',
+    name: 'Edit',
+    component: Edit
   },
 //   {
 //     path: '/about',
